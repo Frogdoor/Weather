@@ -1,2 +1,2 @@
 # Weather
-Some Cool shiz
+Here is a clever description.

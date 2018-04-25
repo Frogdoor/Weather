@@ -15,8 +15,10 @@ class Node(object):
 		self.Value=0.0
 		self.Err=0.0
 	
-####################################################33
-def calc_Node(inputs,weights,Bias):
+####################################################
+
+
+def calc_Node(inputs,weights,Bias): #algorithm to calculate the output of a node
 	nodeSum=0.
 	
 	for i in range(len(inputs)):
@@ -26,7 +28,7 @@ def calc_Node(inputs,weights,Bias):
 	return(1/(1+exp(-1.*nodeSum)))
 
 
-def RunBrain(Inputs, Brain, nCores):
+def RunBrain(Inputs, Brain, nCores): #algorithm to run a set of inputs through the brain.
 	
 	for i in range(len(Brain)):
 		if i==0:
@@ -47,7 +49,7 @@ def RunBrain(Inputs, Brain, nCores):
 	#return(Brain[len(Brain)-1])
 	
 
-def BackProp(Brain, Key, rate):
+def BackProp(Brain, Key, rate): #backpropagtion algorithm to train the brain.
 	i=len(Brain)-1
 	while i>0:
 		for j in range(len(Brain[i])):
@@ -68,14 +70,14 @@ def BackProp(Brain, Key, rate):
  				
 		
 
-def get_Random():
+def get_Random():#generates a random number from -1 to 1
 	if random.random()>0.5:
 		x=random.random()
 	else:
 		x=-1.*random.random()
 	return(x)
 
-def RandomBrain(NumLayers,numNodes,numInputs,numOutputs):#R
+def RandomBrain(NumLayers,numNodes,numInputs,numOutputs):#Generates a randomly initialized brain
 
 	HiddenLayers=[]
 	#NumLayers=2
@@ -119,231 +121,10 @@ def RandomBrain(NumLayers,numNodes,numInputs,numOutputs):#R
 	Brain.append(outLayer)
 	return Brain
 	
-	
-def BreedBrains(Mom,Dad):#Creates a random mix of two brains. 
-
-	#Pick the length of Mom or Dad 
-	if get_Random() >0.5:
-		maxLength = len(Dad)-1
-	else:
-		maxLength = len(Mom)-1 #only hidden layers
-	
-	#print len(Dad),len(Mom)
-	
-	
-	#chance to mutate
-	if get_Random()<mu :
-		if get_Random()>0.5:
-			maxLength+=1
-		else:
-			if maxLength>2:
-				maxLength-=1
-				
-	###print 'Babby Len: '+str(maxLength)+" + output Layer"	
-
-	#print maxLength
-	
-	if get_Random()>0.5:
-		maxNNum = len(Dad[0])
-	else:
-		maxNNum=len(Mom[0])
-	
-	#chance to mutate
-	if get_Random()<mu :
-		if get_Random()>0.5:
-			maxNNum+=1
-		else:
-			if maxNNum > 2:
-				maxNNum-=1
-	###print 'Babby Depth: '+str(maxNNum)
-	
-	Babby = [] #How is babby formed?
-	#Babby.append(InputNodes)
-	
-	
-	###print "Building Babby..."
-	for i in range(0,maxLength):
-		Babby.append([])
-		###print "----->Layer: "+str(len(Babby))
-			
-		if i>len(Dad)-1 and i<=len(Mom)-1:#if we've outgrown dad but not mom
-			##print 1
-			Babby[i]=Mom[i]
-			
-		
-			while len(Babby[i])<maxNNum:
-				try:
-					Babby[i].append(Babby[i][random.randrange(0,len(Babby[i])-1)])
-				except:
-					Babby[i].append(Babby[i][0])
-		
-			if len(Babby[i])>maxNNum:
-				del Babby[maxNNum:]
-				
-		elif i<=len(Dad)-1 and i>len(Mom)-1:#visa versa
-			###print 2
-			Babby[i]=Dad[i]
-			
-			
-			while len(Babby[i])<maxNNum:
-				try:
-					Babby[i].append(Babby[i][random.randrange(0,len(Babby[i])-1)])
-				except:
-					Babby[i].append(Babby[i][0])
-					
-			if len(Babby[i])>maxNNum:
-				del Babby[maxNNum:]
-		
-		elif i>len(Dad)-1 and i>len(Mom)-1:#if we've mutated beyond both
-			###print 3
-			Babby[i]=Babby[random.randrange[1,len(Babby)]]
-		
-		else:
-			###print 4
-			
-			for j in range(0,maxNNum):
-				Babby[i].append(Node())
-				###print "Node(): "+str(len(Babby[i]))
-				
-				###print len(Dad[i])-1,len(Mom[i])-1,j
-
-				if j>len(Dad[i])-1 and j <=len(Mom[i])-1: #If we've outgrown dad but not mom use moms weight list 
-					###print 'A'
-					Babby[i][j]=Mom[i][j]
-					
-					
-					if i==0:
-						maxk=len(Mom[0][0].Weights)
-					else:
-						maxk=len(Babby[0])
-					
-					while len(Babby[i][j].Weights)< maxk:	
-						Babby[i][j].Weights.append(get_Random())
-						
-					if len(Babby[i][j].Weights) > len(Babby[0]):
-						del Babby[i][j].Weights[len(Babby[0]):]
-					
-					
-				elif j<=len(Dad[i])-1 and j >len(Mom[i])-1: # and visa versa
-					###print 'B'
-					Babby[i][j] = Dad[i][j]
-					
-										
-					if i==0:
-						maxk=len(Mom[0][0].Weights)
-					else:
-						maxk=len(Babby[0])
-					
-					while len(Babby[i][j].Weights)< maxk:	
-						Babby[i][j].Weights.append(get_Random())
-					
-					if len(Babby[i][j].Weights) > len(Babby[0]):
-						del Babby[i][j].Weights[len(Babby[0]):]
-
-						
-				elif j>len(Dad[i])-1 and j>len(Mom[i])-1: #if we've mutated beyond both of them
-					###print 'C'
-					Babby[i][j] = Babby[i][random.randrange(0,len(Babby[i]))]
-				else: 
-					if i==0:
-						krange=len(Mom[0][0].Weights)#Special case for input layer
-					else:
-						krange=len(Babby[0])
-					###print 'D'
-					for k in range(krange):
-						
-						if k> len(Mom[i][j].Weights)-1 and k<= len(Dad[i][j].Weights)-1:
-							Babby[i][j].Weights.append(Dad[i][j].Weights[k])
-							Babby[i][j].Bias=Dad[i][j].Bias
-						elif k <= len(Mom[i][j].Weights)-1 and k > len(Dad[i][j].Weights)-1:
-							Babby[i][j].Weights.append(Mom[i][j].Weights[k])
-							Babby[i][j].Bias=Mom[i][j].Bias
-						elif  k > len(Mom[i][j].Weights)-1 and k > len(Dad[i][j].Weights)-1:
-							Babby[i][j].Weights.append(get_Random())
-							if get_Random()>0.5:
-								Babby[i][j].Bias=-1*get_Random()
-							else:
-								Babby[i][j].Bias=get_Random()
-							
-						else:
-							if get_Random() >0.5 :
-								Babby[i][j].Weights.append(Dad[i][j].Weights[k])
-								Babby[i][j].Bias = Dad[i][j].Bias
-							else:
-								Babby[i][j].Weights.append(Mom[i][j].Weights[k])
-								Babby[i][j].Bias = Mom[i][j].Bias
-							
-							#chance to mutate
-							if get_Random()<mu:
-								if get_Random()>0.5:
-									Babby[i][j].Weights[k]=Babby[i][j].Weights[k] - Babby[i][j].Weights[k]*muR
-									if Babby[i][j].Weights[k]<0.:
-											Babby[i][j].Weights[k]=0.
-									Babby[i][j].Bias = Babby[i][j].Bias - Babby[i][j].Bias*muR
-									if Babby[i][j].Bias<-1 :
-										Babby[i][j].Bias=-1
-								else:
-									Babby[i][j].Weights[k]=Babby[i][j].Weights[k] + Babby[i][j].Weights[k]*muR
-									if Babby[i][j].Weights[k]>1.:
-										Babby[i][j].Weights[k]=1.
-									Babby[i][j].Bias = Babby[i][j].Bias + Babby[i][j].Bias*muR
-									if Babby[i][j].Bias>1 :
-										Babby[i][j].Bias=1
-							
-	#outLayer
-	Babby.append([])
-	i=len(Babby)-1
-	momi=len(Mom)-1
-	dadi=len(Dad)-1
-	#mom dad and babby have some j (num of output nodes) but not necessarily same i
-	for j in range(len(Mom[momi])):
-		Babby[len(Babby)-1].append(Node())
-		
-		for k in range(len(Babby[0])):
-		
-			if k> len(Mom[momi][j].Weights)-1 and k<= len(Dad[dadi][j].Weights)-1:
-				Babby[i][j].Weights.append(Dad[dadi][j].Weights[k])
-				Babby[i][j].Bias=Dad[dadi][j].Bias
-			elif k <= len(Mom[momi][j].Weights)-1 and k > len(Dad[dadi][j].Weights)-1:
-				Babby[i][j].Weights.append(Mom[momi][j].Weights[k])
-				Babby[i][j].Bias=Mom[momi][j].Bias
-			elif  k > len(Mom[momi][j].Weights)-1 and k > len(Dad[dadi][j].Weights)-1:
-				Babby[i][j].Weights.append(get_Random())
-				if get_Random()>0.5:
-					Babby[i][j].Bias=-1*get_Random()
-				else:
-					Babby[i][j].Bias=get_Random()
-			
-			else:
-				if get_Random() >0.5 :
-					Babby[i][j].Weights.append(Dad[dadi][j].Weights[k])
-					Babby[i][j].Bias = Dad[dadi][j].Bias
-				else:
-					Babby[i][j].Weights.append(Mom[momi][j].Weights[k])
-					Babby[i][j].Bias = Mom[momi][j].Bias
-			
-				#chance to mutate
-				if get_Random()<mu:
-					if get_Random()>0.5:
-						Babby[i][j].Weights[k]=Babby[i][j].Weights[k] - Babby[i][j].Weights[k]*muR
-						if Babby[i][j].Weights[k]<0.:
-								Babby[i][j].Weights[k]=0.
-						Babby[i][j].Bias = Babby[i][j].Bias - Babby[i][j].Bias*muR
-						if Babby[i][j].Bias<-1 :
-							Babby[i][j].Bias=-1
-					else:
-						Babby[i][j].Weights[k]=Babby[i][j].Weights[k] + Babby[i][j].Weights[k]*muR
-						if Babby[i][j].Weights[k]>1.:
-							Babby[i][j].Weights[k]=1.
-						Babby[i][j].Bias = Babby[i][j].Bias + Babby[i][j].Bias*muR
-						if Babby[i][j].Bias>1 :
-							Babby[i][j].Bias=1
-
-	return Babby
 
 
 ##################################################################################		
-def BreedBrains2(Mom,Dad,mu,muR):
+def BreedBrains2(Mom,Dad,mu,muR): #Generates a random offspring from Mom and Dad brains. Every feature of the offspring has chance mu (0-1) of mutating by muR (any real)
 #Pick the num of hidden layers of Mom or Dad 
 	if get_Random() >0.5:
 		hLayerNum = len(Dad)-1
@@ -518,7 +299,7 @@ def BreedBrains2(Mom,Dad,mu,muR):
 
 
 
-def CheckBrain(inLen,outLen,Brain):
+def CheckBrain(inLen,outLen,Brain): #checks a generated brain for any defects
 	
 	for i in range(len(Brain)):
 		if i==0:
@@ -539,83 +320,9 @@ def CheckBrain(inLen,outLen,Brain):
 				return(False)
 	return(True)
 
-def Test_brain_breeding():
-	Brains=[]
-	for i in range(0,2):
-		Brains.append(RandomBrain(random.randrange(2,3),random.randrange(2,3),20,1)) #Num of hidden layers, len of hidden layers
-	while True:
-		#Brains[1][1][1].Bias=0.5
-	
-		for Brain in Brains:
-			#print "BRAIN!!!!!"
-		
-			try:
-				for layer in Brain:
-					printstr=''
-					for t in range(0,len(layer)):
-						try:
-							printstr+=str(layer[t].Bias)+' '
-						except:	
-							printstr+=str(layer[t])+' '
-					#print printstr
-			except:
-				#print Brain[len(Brain)-1].Bias
-				continue
-		
 
-		NewBrains=[]
-		for i in range(0,len(Brains)):
-			print ''
-		
-			if i==len(Brains)-1:
-			
-				print "Mating Brains "+str(i)+" and "+str(0)
-				printstr='Mom: '
-				for layer in Brains[i]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(Brains[i][len(Brains[i])-1][0].Weights)
-			
-				printstr='Dad: '
-				for layer in Brains[0]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(Brains[0][len(Brains[0])-1][0].Weights)
-				NewBrains.append(BreedBrains(Brains[i],Brains[0]))
-				printstr='Babby: '
-				for layer in NewBrains[len(NewBrains)-1]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(NewBrains[len(NewBrains)-1][len(NewBrains[len(NewBrains)-1])-1][0].Weights)
-			
-			else:
-			
-				print "Mating Brains "+str(i)+" and "+str(i+1)
-				printstr='Mom: '
-				for layer in Brains[i]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(Brains[i][len(Brains[i])-1][0].Weights)
-			
-				printstr='Dad: '
-				for layer in Brains[i+1]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(Brains[i+1][len(Brains[i+1])-1][0].Weights)
-				NewBrains.append(BreedBrains(Brains[i],Brains[i+1]))
-				printstr='Babby: '
-				for layer in NewBrains[len(NewBrains)-1]: printstr+=str(len(layer))+' '
-				print printstr
-				print len(NewBrains[len(NewBrains)-1][len(NewBrains[len(NewBrains)-1])-1][0].Weights)
-				
-	
-		Brains=NewBrains
-		raw_input("again?")		
-
-		print "-----------------------------New Generation---------------------------------"
 
 
 if __name__ == '__main__' :
-	inputs =[get_Random() for i in range(30)]
-	myBrain = RandomBrain(20,20,len(inputs),1)
-	tone=clock()
-	RunBrain(inputs,myBrain,3)
-	dt=clock()-tone
-	print myBrain[len(myBrain)-1][0].Value
-	print str(int(round(dt*1000000,0)))+' us'
+	return 0
 	

@@ -323,6 +323,3 @@ def CheckBrain(inLen,outLen,Brain): #checks a generated brain for any defects
 
 
 
-if __name__ == '__main__' :
-	return 0
-	
